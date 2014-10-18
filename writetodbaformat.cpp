@@ -150,6 +150,15 @@ WriteToDbaFormat::WriteToDbaFormat()
     _doc = QDomDocument("DatabaseAnime");
     _dom = _doc.createElement("DatabaseAnime");
     _doc.appendChild(_dom);
+
+    _domAnime = _doc.createElement("Anime");
+    _dom.appendChild(_domAnime);
+    _domManga = _doc.createElement("Manga");
+    _dom.appendChild(_domManga);
+    _domAmv = _doc.createElement("Amv");
+    _dom.appendChild(_domAmv);
+    _domDorama = _doc.createElement("Dorama");
+    _dom.appendChild(_domDorama);
 }
 WriteToDbaFormat::WriteToDbaFormat(QString filePath)
 {
@@ -158,45 +167,38 @@ WriteToDbaFormat::WriteToDbaFormat(QString filePath)
     _doc = QDomDocument("DatabaseAnime");
     _dom = _doc.createElement("DatabaseAnime");
     _doc.appendChild(_dom);
+
+    _domAnime = _doc.createElement("Anime");
+    _dom.appendChild(_domAnime);
+    _domManga = _doc.createElement("Manga");
+    _dom.appendChild(_domManga);
+    _domAmv = _doc.createElement("Amv");
+    _dom.appendChild(_domAmv);
+    _domDorama = _doc.createElement("Dorama");
+    _dom.appendChild(_domDorama);
 }
 
 bool WriteToDbaFormat::appendAnime(QMap<QString, QString> data)
 {
-    QDomElement  domAnime = _doc.createElement("Anime");
-    _dom.appendChild(domAnime);
-
-    domAnime.appendChild( Export::anime(_doc, data) );
-
+    _domAnime.appendChild( Export::anime(_doc, data) );
     return true;
 }
 
 bool WriteToDbaFormat::appendManga(QMap<QString, QString> data)
 {
-    QDomElement  domManga = _doc.createElement("Manga");
-    _dom.appendChild(domManga);
-
-    domManga.appendChild( Export::manga(_doc, data) );
-
+    _domManga.appendChild( Export::manga(_doc, data) );
     return true;
 }
 
 bool WriteToDbaFormat::appendAmv(QMap<QString, QString> data)
 {
-    QDomElement  domAmv = _doc.createElement("Amv");
-    _dom.appendChild(domAmv);
-
-    domAmv.appendChild( Export::amv(_doc, data) );
-
+    _domAmv.appendChild( Export::amv(_doc, data) );
     return true;
 }
 
 bool WriteToDbaFormat::appendDorama(QMap<QString, QString> data)
 {
-    QDomElement  domDorama = _doc.createElement("Dorama");
-    _dom.appendChild(domDorama);
-
-    domDorama.appendChild( Export::dorama(_doc, data) );
-
+    _domDorama.appendChild( Export::dorama(_doc, data) );
     return true;
 }
 

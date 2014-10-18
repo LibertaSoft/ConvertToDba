@@ -16,10 +16,14 @@ private:
     unsigned long long _recordCount;
     unsigned long long _currentRecordCount;
     sections::Section _section;
+
+    QMap<QString,QByteArray> readAnime();
+    QMap<QString,QByteArray> readManga();
 public:
     ReadAnimeList(QString fileName);
     bool readHeader();
     bool isEnd()const;
+    sections::Section getSection()const;
     unsigned long long getRecordCount()const;
     unsigned long long getCurrentRecordNumber()const;
     QMap<QString,QByteArray> readNext();

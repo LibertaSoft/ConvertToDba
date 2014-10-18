@@ -25,12 +25,18 @@ int main(int argc, char *argv[])
         std::cout << "ConvertFromAnimeList /path/to/fileName.anime" << std::endl;
     }else{
         QString fileName( argv[1] );
+        QString outputFileName("/tmp/DBA/1/");
         ReadAnimeList AnimeList(fileName);
+        const char* codecName = "Windows-1251";
 
-        WriteToDbaFormat DBA( QString("/tmp/DBA/1/") );
+        WriteToDbaFormat DBA( outputFileName );
         if( AnimeList.readHeader() ){
             while( AnimeList.isEnd() == false ){
-                DBA.appendAnime( convertEncode("Windows-1251", AnimeList.readNext() ) );
+                if( AnimeList.getSection() == sections::anime ){
+                    DBA.appendAnime( convertEncode(codecName, AnimeList.readNext() ) );
+                }else{
+                    DBA.appendManga( convertEncode(codecName, AnimeList.readNext() ) );
+                }
             }
             DBA.writeToFile();
         }

@@ -13,6 +13,11 @@ private:
     QString _filePath;
     QDomDocument _doc;
     QDomElement  _dom;
+
+    QDomElement  _domAnime;
+    QDomElement  _domManga;
+    QDomElement  _domAmv;
+    QDomElement  _domDorama;
 public:
     WriteToDbaFormat();
     WriteToDbaFormat(QString filePath);
