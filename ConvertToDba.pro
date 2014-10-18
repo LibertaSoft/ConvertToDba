@@ -14,6 +14,7 @@ CONFIG   -= app_bundle
 
 TEMPLATE = app
 
+SUBDIRS += tests
 
 SOURCES += main.cpp \
     readanimelist.cpp \
