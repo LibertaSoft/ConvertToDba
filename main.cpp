@@ -23,9 +23,9 @@ void printHelp(){
     std::cout << "Options:" << std::endl;
     std::cout << "  " << "-i " << "\t" << "Input file. The file exported from the program AnimeList" << std::endl;
     std::cout << "  " << "-o " << "\t" << "Output file. The file in which you want to export data" << std::endl;
-    std::cout << "  " << "-e " << "\t" << "Endoding. The encoding of the input file" << std::endl;
-    std::cout << "  " << "-h " << "\t" << "Help. Pring help and exit with program" << std::endl;
-    std::cout << "  " << "-v " << "\t" << "Version. Print version and exit with program" << std::endl;
+    std::cout << "  " << "-e " << "\t" << "Endoding. The encoding of the input file. Default use a windows-1251" << std::endl;
+    std::cout << "  " << "-h " << "\t" << "Help. Pring help and exit" << std::endl;
+    std::cout << "  " << "-v " << "\t" << "Version. Print version and exit" << std::endl;
 }
 
 int main(int argc, char *argv[])
@@ -39,34 +39,39 @@ int main(int argc, char *argv[])
         QString outputFileName;
         QByteArray codecName("Windows-1251");
 
-        short initComplete(0);
-        const char *opts = "i:o:e:hv";
-        int opt;
-        while((opt = getopt(argc, argv, opts)) != -1) {
-            switch(opt) {
-             case 'i':
-                fileName = QString(optarg);
-                initComplete++;
-                break;
-             case 'o':
-                outputFileName = QString(optarg);
-                initComplete++;
-                break;
-             case 'e':
-                codecName = QByteArray(optarg);
-                break;
-            case 'v':
-                std::cout << "Version: " << version << std::endl;
-                return 0;
-            case 'h':
+        {
+            short initComplete(0);
+            const char *opts = "i:o:e:hv";
+            int opt;
+            while((opt = getopt(argc, argv, opts)) != -1) {
+                switch(opt) {
+                 case 'i':
+                    fileName = QString(optarg);
+                    initComplete++;
+                    break;
+                 case 'o':
+                    outputFileName = QString(optarg);
+                    initComplete++;
+                    break;
+                 case 'e':
+                    codecName = QByteArray(optarg);
+                    break;
+                case 'v':
+                    std::cout << "ConvertToDba" << " " << version << std::endl;
+                    std::cout << "License: " << "GNU GPLv3+" << std::endl;
+                    std::cout << "This is free software, you can modify and distribute it." << std::endl;
+                    std::cout << "Authors program: LibertaSoft/Demetri0 (LibertaSoft@yandex.ru)" << std::endl;
+                    return 0;
+                case 'h':
+                    printHelp();
+                    return 0;
+                }
+             }
+            if( initComplete < 2 ){
+                std::cerr << "Error: Lost 1 or more required arguments." << std::endl;
                 printHelp();
-                return 0;
+                return 1;
             }
-         }
-        if( initComplete < 2 ){
-            std::cerr << "Error: less one or more arguments." << std::endl;
-            printHelp();
-            return 1;
         }
 
         ReadAnimeList AnimeList(fileName);
