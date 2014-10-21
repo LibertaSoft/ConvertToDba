@@ -5,6 +5,25 @@
 
 QMap<QString, QByteArray> ReadAnimeList::readAnime()
 {
+    QStringList key;
+    QList<QByteArray> value;
+
+    key << "Title";         value << "Name:";
+    key << "OrigTitle";     value << "Origname:";
+    key << "Director";      value << "Author:";
+    key << "Studios";       value << "Studi:";
+    key << "Year";          value << "Year:";
+    key << "Season";        value << "Sezon:";
+    key << "SeriesSpecial"; value << "Speshl:";
+    key << "vSeriesTV";     value << "Ser:";
+    key << "SeriesTV";      value << "AllSer:";
+    key << "Score";         value << "Rait:";
+    key << "Tags";          value << "Janr:";
+    key << "Type";          value << "Type:";
+    key << "Description";   value << "StartMemo:";
+    key << "URL";           value << "Link:";
+    key << "ImagePath";     value << "Logo:";
+
     QMap<QString, QByteArray> data;
     const QString sectionName("Anime");
 
@@ -15,89 +34,64 @@ QMap<QString, QByteArray> ReadAnimeList::readAnime()
 
 
     if( string != "---Start "+sectionName+"---\n" ){
+        qCritical() << "Start of an "+sectionName+" element is not found. Data is clear"
+                    << "String: " << string;
         return data;
     }
 
-    string = _file.readLine();
-    if( string.startsWith( QByteArray("Name:") ) )
-        data["Title"] = string.right( string.length() - 5 ).left( string.length() - 6 );
+    for(int i = 0; i < key.size(); ++i){
+        string = _file.readLine();
 
-    string = _file.readLine();
-    if( string.startsWith( QByteArray("Origname:") ) )
-        data["OrigTitle"] = string.right( string.length() - 9 ).left( string.length() - 10 );
-
-    string = _file.readLine();
-    if( string.startsWith( QByteArray("Author:") ) )
-        data["Director"] = string.right( string.length() - 7 ).left( string.length() - 8 );
-
-    string = _file.readLine();
-    if( string.startsWith( QByteArray("Studi:") ) )
-        data["Studios"] = string.right( string.length() - 6 ).left( string.length() - 7 );
-
-    string = _file.readLine();
-    if( string.startsWith( QByteArray("Year:") ) )
-        data["Year"] = string.right( string.length() - 5 ).left( string.length() - 6 );
-
-    string = _file.readLine();
-    if( string.startsWith( QByteArray("Sezon:") ) )
-        data["Season"] = string.right( string.length() - 6 ).left( string.length() - 7 );
-
-    string = _file.readLine();
-    if( string.startsWith( QByteArray("Speshl:") ) )
-        data["SeriesSpecial"] = string.right( string.length() - 7 ).left( string.length() - 8 );
-
-    string = _file.readLine();
-    if( string.startsWith( QByteArray("Ser:") ) )
-        data["vSeriesTV"] = string.right( string.length() - 4 ).left( string.length() - 5 );
-
-    string = _file.readLine();
-    if( string.startsWith( QByteArray("AllSer:") ) )
-        data["SeriesTV"] = string.right( string.length() - 7 ).left( string.length() - 8 );
-
-    string = _file.readLine();
-    if( string.startsWith( QByteArray("Rait:") ) )
-        data["Score"] = string.right( string.length() - 5 ).left( string.length() - 6 );
-
-    string = _file.readLine();
-    if( string.startsWith( QByteArray("Janr:") ) )
-        data["Tags"] = string.right( string.length() - 5 ).left( string.length() - 6 );
-
-    string = _file.readLine();
-    if( string.startsWith( QByteArray("Type:") ) )
-        data["Type"] = string.right( string.length() - 5 ).left( string.length() - 6 );
-
-    string = _file.readLine();
-    if( string.startsWith( QByteArray("StartMemo:") ) ){
-        QByteArray memo = string.right( string.length() - 10 );
-        if( string.endsWith( QByteArray(":EndMemo\n") ) ){
-            memo = memo.left( memo.length() - 9 );
-        }else{
-            do{
-                string = _file.readLine();
-                memo += string;
-            }while( !string.endsWith( QByteArray(":EndMemo\n") ) );
-            memo = memo.left( memo.length() - 9 );
+        if( string.startsWith( "StartMemo:" ) ){
+            QByteArray memo = string.right( string.length() - 10 );
+            if( string.endsWith( ":EndMemo\n" ) ){
+                memo = memo.left( memo.length() - 9 );
+            }else{
+                do{
+                    string = _file.readLine();
+                    memo += string;
+                }while( !string.endsWith( ":EndMemo\n" ) );
+                memo = memo.left( memo.length() - 9 );
+            }
+            data["Description"] = memo;
+            continue;
         }
-        data["Description"] = memo;
+        if( string.startsWith( value[i] ) )
+            data[ key[i] ] = string.right( string.length() - value[i].length() ).left( string.length() - value[i].length()-1 );
     }
 
     string = _file.readLine();
-    if( string.startsWith( QByteArray("Link:") ) )
-        data["URL"] = string.right( string.length() - 5 ).left( string.length() - 6 );
-
-    string = _file.readLine();
-    if( string.startsWith( QByteArray("Logo:") ) )
-        data["ImagePath"] = string.right( string.length() - 5 ).left( string.length() - 6 );
-
-    string = _file.readLine();
-    if( string != "---End "+sectionName+"---\n" )
+    if( string != "---End "+sectionName+"---\n" ){
+        qCritical() << "End of an "+sectionName+" element is not found. Data is clear."
+                    << "String: " << string;
         data.clear();
+    }
 
     return data;
 }
 
 QMap<QString, QByteArray> ReadAnimeList::readManga()
 {
+    QStringList key;
+    QList<QByteArray> value;
+
+    key << "Title";         value << "Name:";
+    key << "AltTitle";      value << "OrigName:";
+    key << "Translation";   value << "Perevod:";
+    key << "Author";        value << "Avtor:";
+    key << "Year";          value << "Year:";
+    key << "Vol";           value << "Tom:";
+    key << "Vipusk";        value << "Vipusk:";
+    key << "vCh";           value << "Glav:";
+    key << "Ch";            value << "AllGlav:";
+    key << "vVol";          value << "NowTom:";
+    key << "Score";         value << "Raiting:";
+    key << "Tags";          value << "Janrs:";
+    key << "Type";          value << "Type:";
+    key << "Description";   value << "StartMemo:";
+    key << "URL";           value << "Link:";
+    key << "ImagePath";     value << "Logos:";
+
     QMap<QString, QByteArray> data;
     const QString sectionName("Manga");
 
@@ -108,89 +102,36 @@ QMap<QString, QByteArray> ReadAnimeList::readManga()
 
 
     if( string != "---Start "+sectionName+"---\n" ){
-        qCritical() << "[ERROR]Section neme uncorrect";
-        qDebug() << string;
+        qCritical() << "Start of an "+sectionName+" element is not found. Data is clear"
+                    << "String: " << string;
         return data;
     }
 
-    string = _file.readLine();
-    if( string.startsWith( QByteArray("Name:") ) )
-        data["Title"] = string.right( string.length() - 5 ).left( string.length() - 6 );
+    for(int i = 0; i < key.size(); ++i){
+        string = _file.readLine();
 
-    string = _file.readLine();
-    if( string.startsWith( QByteArray("OrigName:") ) )
-        data["AltTitle"] = string.right( string.length() - 9 ).left( string.length() - 10 );
-
-    string = _file.readLine();
-    if( string.startsWith( QByteArray("Perevod:") ) )
-        data["Translation"] = string.right( string.length() - 8 ).left( string.length() - 9 );
-
-    string = _file.readLine();
-    if( string.startsWith( QByteArray("Avtor:") ) )
-        data["Author"] = string.right( string.length() - 6 ).left( string.length() - 7 );
-
-    string = _file.readLine();
-    if( string.startsWith( QByteArray("Year:") ) )
-        data["Year"] = string.right( string.length() - 5 ).left( string.length() - 6 );
-
-    string = _file.readLine();
-    if( string.startsWith( QByteArray("Tom:") ) )
-        data["Vol"] = string.right( string.length() - 4 ).left( string.length() - 5 );
-
-    string = _file.readLine();
-    if( string.startsWith( QByteArray("Vipusk:") ) )
-        data["Vipusk"] = string.right( string.length() - 7 ).left( string.length() - 8 );
-
-    string = _file.readLine();
-    if( string.startsWith( QByteArray("Glav:") ) )
-        data["vCh"] = string.right( string.length() - 5 ).left( string.length() - 6 );
-
-    string = _file.readLine();
-    if( string.startsWith( QByteArray("AllGlav:") ) )
-        data["Ch"] = string.right( string.length() - 8 ).left( string.length() - 9 );
-
-    string = _file.readLine();
-    if( string.startsWith( QByteArray("NowTom:") ) )
-        data["vVol"] = string.right( string.length() - 7 ).left( string.length() - 8 );
-
-    string = _file.readLine();
-    if( string.startsWith( QByteArray("Raiting:") ) )
-        data["Score"] = string.right( string.length() - 8 ).left( string.length() - 9 );
-
-    string = _file.readLine();
-    if( string.startsWith( QByteArray("Janrs:") ) )
-        data["Tags"] = string.right( string.length() - 6 ).left( string.length() - 7 );
-
-    string = _file.readLine();
-    if( string.startsWith( QByteArray("Type:") ) )
-        data["Type"] = string.right( string.length() - 5 ).left( string.length() - 6 );
-
-    string = _file.readLine();
-    if( string.startsWith( QByteArray("StartMemo:") ) ){
-        QByteArray memo = string.right( string.length() - 10 );
-        if( string.endsWith( QByteArray(":EndMemo\n") ) ){
-            memo = memo.left( memo.length() - 9 );
-        }else{
-            do{
-                string = _file.readLine();
-                memo += string;
-            }while( !string.endsWith( QByteArray(":EndMemo\n") ) );
-            memo = memo.left( memo.length() - 9 );
+        if( string.startsWith( QByteArray("StartMemo:") ) ){
+            QByteArray memo = string.right( string.length() - 10 );
+            if( string.endsWith( QByteArray(":EndMemo\n") ) ){
+                memo = memo.left( memo.length() - 9 );
+            }else{
+                do{
+                    string = _file.readLine();
+                    memo += string;
+                }while( !string.endsWith( QByteArray(":EndMemo\n") ) );
+                memo = memo.left( memo.length() - 9 );
+            }
+            data["Description"] = memo;
+            continue;
         }
-        data["Description"] = memo;
+        if( string.startsWith( value[i] ) )
+            data[ key[i] ] = string.right( string.length() - value[i].length() ).left( string.length() - value[i].length()-1 );
     }
 
     string = _file.readLine();
-    if( string.startsWith( QByteArray("Link:") ) )
-        data["URL"] = string.right( string.length() - 5 ).left( string.length() - 6 );
-
-    string = _file.readLine();
-    if( string.startsWith( QByteArray("Logos:") ) )
-        data["ImagePath"] = string.right( string.length() - 6 ).left( string.length() - 7 );
-
-    string = _file.readLine();
     if( string != "---End "+sectionName+"---\n" ){
-        qCritical() << "[ERROR]Section close-neme uncorrect";
+        qCritical() << "End of an "+sectionName+" element is not found. Data is clear."
+                    << "String: " << string;
         data.clear();
     }
 

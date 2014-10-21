@@ -1,4 +1,3 @@
-//#include <QCoreApplication>
 #include <iostream>
 #include <unistd.h>
 #include <QDebug>
@@ -28,10 +27,16 @@ void printHelp(){
     std::cout << "  " << "-v " << "\t" << "Version. Print version and exit" << std::endl;
 }
 
+void printVersion(){
+    const char* version = "0.0.6 Alpha";
+    std::cout << "ConvertToDba" << " " << version << std::endl;
+    std::cout << "License: " << "GNU GPLv3+" << std::endl;
+    std::cout << "This is free software, you can modify and distribute it." << std::endl;
+    std::cout << "Authors program: LibertaSoft/Demetri0 (LibertaSoft@yandex.ru)" << std::endl;
+}
+
 int main(int argc, char *argv[])
 {
-    const char* version = "0.0.5 Pre-Alpha";
-    //QCoreApplication a(argc, argv);
     if(argc < 2){
         printHelp();
     }else{
@@ -57,10 +62,7 @@ int main(int argc, char *argv[])
                     codecName = QByteArray(optarg);
                     break;
                 case 'v':
-                    std::cout << "ConvertToDba" << " " << version << std::endl;
-                    std::cout << "License: " << "GNU GPLv3+" << std::endl;
-                    std::cout << "This is free software, you can modify and distribute it." << std::endl;
-                    std::cout << "Authors program: LibertaSoft/Demetri0 (LibertaSoft@yandex.ru)" << std::endl;
+                    printVersion();
                     return 0;
                 case 'h':
                     printHelp();
@@ -87,5 +89,5 @@ int main(int argc, char *argv[])
             DBA.writeToFile();
         }
     }
-    return 0;//a.exec();
+    return 0;
 }
